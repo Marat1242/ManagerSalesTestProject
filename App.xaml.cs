@@ -1,46 +1,46 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.IO;
+using System.Reflection;
 using System.Windows;
+using ManagerSalesTestProject.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ManagerSalesTestProject;
 
 
-public  class App : Application
+public partial class App : Application
 {
-    public IConfiguration configuration {  get; set; }
-    public IServiceProvider serviceProvider { get; set; }
+    public IServiceProvider? ServiceProvider { get; private set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        var config = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
+        try
+        {
+            // Настройка сервисов
+            var services = new ServiceCollection();
 
-        // 2. Настройка сервисов
-        var services = new ServiceCollection();
+            // Регистрация DbContext
+            services.AddDbContext<ManagerSalesTestProjectContext>(options =>
+                options.UseNpgsql("Host=localhost;Port=5432;Database=ManagerSalesTestProject;Username=postgres; Password=admin;"));
 
-        // Добавляем контекст БД
-        services.AddDbContext<ManagerSalesTestProjectContext>(options => 
-                    options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
-            
-                // Добавляем необходимые сервисы
-                services.AddTransient<IDataService, DataService>();
-                services.AddTransient<MainViewModel>();
-                services.AddSingleton<MainWindow>();
+            services.AddScoped<DataService>();
+            // Регистрация других сервисов
+            services.AddSingleton<MainWindow>();
 
-                // 3. Создаем провайдер сервисов
-                var serviceProvider = services.BuildServiceProvider();
 
-        // 4. Автоматически создаем БД (если не существует)
-        var dbContext = serviceProvider.GetService<ManagerSalesTestProjectContext>();
-        dbContext.Database.EnsureCreated();
+           
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Ошибка!");
+            Shutdown();
+        }
+    }
 
-                // 5. Запускаем главное окно
-                var mainWindow = serviceProvider.GetService<MainWindow>();
-        mainWindow.Show();
-            }
+ 
 }
-

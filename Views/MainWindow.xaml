@@ -8,5 +8,18 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5">
+            <Button Content="Load" Click="LoadClick" Margin="5" Padding="10 5"/>
+            <Button Content="Add" Click="AddClick" Margin="5" Padding="10 5"/>
+            <Button Content="Update" Click="UpdateClick" Margin="5" Padding="10 5"/>
+            <Button Content="Delete" Click="DeleteClick" Margin="5" Padding="10 5"/>
+        </StackPanel>
+
+        <DataGrid x:Name="EquipmentGrid" Grid.Row="1" Margin="5" AutoGenerateColumns="True"/>
     </Grid>
 </Window>

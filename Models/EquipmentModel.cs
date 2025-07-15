@@ -1,12 +1,21 @@
 namespace ManagerSalesTestProject.Models;
 public class EquipmentModel
 {
-    public int id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
-    public EquipmentType equipmentType { get; set; }
-    public EquipmentStatus equipmentStatus { get; set; }
+    public EquipmentType Type { get; set; }
+    public EquipmentStatus Status { get; set; }
+    public EquipmentModel(int id, string name, EquipmentType type, EquipmentStatus status)
+    {
+        Id = id;
+        Name = name;
+        Type = type;
+        Status = status;
+    }
+    //пустой конструктор для EF Core
+    public EquipmentModel() { }
+};
 
-}
 public enum EquipmentType
 {
     Printer,
@@ -17,5 +26,5 @@ public enum EquipmentStatus
 {
     InUsing,
     InWareHouse,
-    InRapair
+    InRepair
 }
